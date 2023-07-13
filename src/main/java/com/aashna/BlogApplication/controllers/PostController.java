@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/")
+@RequestMapping("/api")
 public class PostController {
 
     PostService postService;
@@ -15,19 +15,24 @@ public class PostController {
         this.postService = postService;
     }
 
-    @GetMapping("{postId}")
+    @GetMapping("/posts/{postId}")
     public Post getPost(@PathVariable("postId") Integer postId) {
         return postService.getPostById(postId);
     }
 
-    @GetMapping()
+    @GetMapping("/user/{userId}/posts")
+    public List<Post> getPostByUser(@PathVariable Integer userId) {
+        return postService.getPostByUser(userId);
+    }
+
+    @GetMapping("/posts")
     public List<Post>getAllPosts(){
         return postService.getAllPosts();
     }
 
-    @PostMapping
-    public String createPost(@RequestBody Post post){
-        postService.createPost(post);
+    @PostMapping("/user/{userId}/posts")
+    public String createPost(@RequestBody Post post, @PathVariable Integer userId){
+        postService.createPost(post, userId);
         return "Post created Successfully";
     }
 
@@ -37,10 +42,17 @@ public class PostController {
         return "Post updated successfully";
     }
 
-    @DeleteMapping("{postId}")
+    @DeleteMapping("/posts/{postId}")
     public String deletePostDetails(@PathVariable("postId") Integer postId){
         postService.deletePost(postId);
         return "Post Deleted";
     }
+
+    @GetMapping("/posts/search/{keywords}")
+    public List<Post> searchPostByTitle(@PathVariable("keywords") String keywords) {
+        return postService.searchPosts(keywords);
+    }
+
+
 }
 

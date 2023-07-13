@@ -21,6 +21,10 @@ public class Post {
 
     @Column(length = 100)
     private String content;
+
+    @ManyToOne
+    private User user;
+
     private Date addedDate;
 
 }
