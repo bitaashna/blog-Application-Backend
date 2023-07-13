@@ -3,9 +3,11 @@ package com.aashna.BlogApplication.services.impl;
 import com.aashna.BlogApplication.model.User;
 import com.aashna.BlogApplication.repositories.UserRepo;
 import com.aashna.BlogApplication.services.UserService;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@Service
 public class UserServiceImpl implements UserService {
 
     UserRepo userRepo;
