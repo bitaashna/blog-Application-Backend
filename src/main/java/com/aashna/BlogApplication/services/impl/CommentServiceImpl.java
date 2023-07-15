@@ -1,5 +1,6 @@
 package com.aashna.BlogApplication.services.impl;
 
+import com.aashna.BlogApplication.exceptions.ResourceNotFoundException;
 import com.aashna.BlogApplication.model.Comment;
 import com.aashna.BlogApplication.model.Post;
 import com.aashna.BlogApplication.payloads.CommentDto;
@@ -25,7 +26,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public CommentDto createComment(CommentDto commentDto, Integer postId) {
 
-        Post post = postRepo.findById(postId).get();
+        Post post = postRepo.findById(postId)
+                .orElseThrow(() -> new ResourceNotFoundException("Post", "post id", postId));
+
 
         Comment comment = this.modelMapper.map(commentDto, Comment.class);
 
@@ -40,7 +43,9 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Integer commentId) {
         // TODO Auto-generated method stub
 
-        Comment com = this.commentRepo.findById(commentId).get();
+        Comment com = this.commentRepo.findById(commentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Comment", "Comment id", commentId));
+
         this.commentRepo.delete(com);
 
     }

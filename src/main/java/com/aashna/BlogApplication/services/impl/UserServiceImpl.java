@@ -1,5 +1,6 @@
 package com.aashna.BlogApplication.services.impl;
 
+import com.aashna.BlogApplication.exceptions.ResourceNotFoundException;
 import com.aashna.BlogApplication.model.User;
 import com.aashna.BlogApplication.payloads.UserDto;
 import com.aashna.BlogApplication.repositories.UserRepo;
@@ -32,7 +33,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(UserDto userDto, Integer userId) {
 
-        User user = this.userRepo.findById(userId).get();
+        User user = this.userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
 
         user.setName(userDto.getName());
         user.setEmail(userDto.getEmail());
@@ -48,14 +50,18 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Integer userId) {
 
-        User user = this.userRepo.findById(userId).get();
+        User user = this.userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+
         return this.userToDto(user);
     }
 
     @Override
     public void deleteUser(Integer userId) {
 
-        User user = this.userRepo.findById(userId).get();
+        User user = this.userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User", "id", userId));
+
         this.userRepo.delete(user);
 
     }

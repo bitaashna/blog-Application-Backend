@@ -1,5 +1,6 @@
 package com.aashna.BlogApplication.services.impl;
 
+import com.aashna.BlogApplication.exceptions.ResourceNotFoundException;
 import com.aashna.BlogApplication.model.Category;
 import com.aashna.BlogApplication.payloads.CategoryDto;
 import com.aashna.BlogApplication.repositories.CategoryRepo;
@@ -29,7 +30,9 @@ public class CategoryServiceimpl implements CategoryService {
 
     @Override
     public CategoryDto updateCategoryById(CategoryDto categoryDto, Integer categoryId) {
-        Category cat = this.categoryRepo.findById(categoryId).get();
+        Category cat = this.categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("category", "category Id", categoryId));
+
         cat.setCategoryTitle(categoryDto.getCategoryTitle());
         cat.setCategoryDescription(categoryDto.getCategoryDescription());
 
@@ -41,14 +44,18 @@ public class CategoryServiceimpl implements CategoryService {
     @Override
     public void deleteCategoryById(Integer categoryId) {
 
-        Category cat = this.categoryRepo.findById(categoryId).get();
+        Category cat = this.categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("category", "category Id", categoryId));
+
         this.categoryRepo.delete(cat);
     }
 
     @Override
     public CategoryDto getCategoryById(Integer categoryId) {
 
-        Category cat = this.categoryRepo.findById(categoryId).get();
+        Category cat = this.categoryRepo.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("category", "category Id", categoryId));
+
         return this.modelMapper.map(cat, CategoryDto.class);
     }
 
