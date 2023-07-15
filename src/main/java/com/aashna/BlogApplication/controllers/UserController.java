@@ -1,48 +1,55 @@
 package com.aashna.BlogApplication.controllers;
 
 import com.aashna.BlogApplication.model.User;
+import com.aashna.BlogApplication.payloads.ApiResponse;
+import com.aashna.BlogApplication.payloads.UserDto;
 import com.aashna.BlogApplication.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/user")
 public class UserController {
 
-    UserService userService;
-    public UserController(UserService userService) {
-        this.userService = userService;
+    @Autowired
+    private UserService userService;
+
+    @PostMapping("/")
+    public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto) {
+        UserDto createUserDto = this.userService.createUser(userDto);
+        return new ResponseEntity<UserDto>(createUserDto, HttpStatus.CREATED);
     }
 
-    //Read user detail with particular id
-    @GetMapping("/{userId}")
-    public User getUser(@PathVariable("userId") Integer userId) {
-        return userService.getUserById(userId);
+    // PUT- update user by id
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserDto> updateUser(@Valid @RequestBody UserDto userDto,
+                                              @PathVariable("userId") Integer userId) {
+        UserDto updatedUser = this.userService.updateUser(userDto, userId);
+        return ResponseEntity.ok(updatedUser);
     }
 
-    //Read all user details from db
-    @GetMapping()
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
-
-    @PostMapping
-    public String createUserDetail(@RequestBody User user){
-        userService.createUser(user);
-        return "User created Successfully";
-    }
-
-    @PutMapping
-    public String updateUserDetails(@RequestBody User user){
-        userService.updateUser(user);
-        return "User updated successfully";
-    }
-
+    // DELETE - delete user by id
     @DeleteMapping("/{userId}")
-    public String deleteUserDetails(@PathVariable("userId") Integer userId){
-        userService.deleteUser(userId);
-        return "User Deleted";
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable("userId") Integer uid) {
+        this.userService.deleteUser(uid);
+        return new ResponseEntity<ApiResponse>(new ApiResponse("User deleted successfully", true), HttpStatus.OK);
     }
+
+    // GET - get user by id
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserDto> getUserById(@PathVariable Integer userId) {
+        return ResponseEntity.ok(this.userService.getUserById(userId));
+    }
+
+    // GET - get all users
+    @GetMapping("/")
+    public ResponseEntity<List<UserDto>> getAllUser() {
+        return ResponseEntity.ok(this.userService.getAllUsers());
+    }
+
 }

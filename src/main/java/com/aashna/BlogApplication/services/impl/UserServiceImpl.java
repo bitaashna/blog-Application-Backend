@@ -1,47 +1,92 @@
 package com.aashna.BlogApplication.services.impl;
 
 import com.aashna.BlogApplication.model.User;
+import com.aashna.BlogApplication.payloads.UserDto;
 import com.aashna.BlogApplication.repositories.UserRepo;
 import com.aashna.BlogApplication.services.UserService;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    UserRepo userRepo;
+    @Autowired
+    private UserRepo userRepo;
 
-    public UserServiceImpl(UserRepo userRepo) {
-        this.userRepo = userRepo;
+    @Autowired
+    private ModelMapper modelMapper;
+
+    @Override
+    public UserDto createUser(UserDto userDto) {
+
+        User user = this.dtoToUser(userDto);
+        User savedUser = this.userRepo.save(user);
+
+        return this.userToDto(savedUser);
     }
 
     @Override
-    public String createUser(User user) {
-        //data via repository layer saved into db
-        userRepo.save(user);
-        return "Success";
+    public UserDto updateUser(UserDto userDto, Integer userId) {
+
+        User user = this.userRepo.findById(userId).get();
+
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+        user.setPassword(userDto.getPassword());
+        user.setAbout(userDto.getAbout());
+
+        User updatedUSer = this.userRepo.save(user);
+        UserDto userDto1 = this.userToDto(updatedUSer);
+
+        return userDto1;
     }
 
     @Override
-    public String updateUser(User user) {
-        userRepo.save(user);
-        return "Success";
+    public UserDto getUserById(Integer userId) {
+
+        User user = this.userRepo.findById(userId).get();
+        return this.userToDto(user);
     }
 
     @Override
-    public User getUserById(Integer userId) {
-        return userRepo.findById(userId).get();
+    public void deleteUser(Integer userId) {
+
+        User user = this.userRepo.findById(userId).get();
+        this.userRepo.delete(user);
+
     }
 
     @Override
-    public String deleteUser(Integer userId) {
-        userRepo.deleteById(userId);
-        return "Success";
+    public List<UserDto> getAllUsers() {
+
+        List<User> users = this.userRepo.findAll();
+
+        List<UserDto> userDtos = users.stream().map(user -> this.userToDto(user)).collect(Collectors.toList());
+
+        return userDtos;
     }
 
-    @Override
-    public List<User> getAllUsers() {
-        return userRepo.findAll();
+    public User dtoToUser(UserDto userDto) {
+
+        User user = this.modelMapper.map(userDto, User.class);
+
+        // user.setId(userDto.getId());
+        // user.setName(userDto.getName());
+        // user.setEmail(userDto.getEmail());
+        // user.setAbout(userDto.getAbout());
+        // user.setPassword(userDto.getPassword());
+
+        return user;
+    }
+
+    public UserDto userToDto(User user) {
+
+        UserDto userDto = this.modelMapper.map(user, UserDto.class);
+
+        return userDto;
     }
 }

@@ -1,16 +1,14 @@
 package com.aashna.BlogApplication.services;
 
-import com.aashna.BlogApplication.model.Post;
+import com.aashna.BlogApplication.payloads.PostDto;
 
 import java.util.List;
 
 public interface PostService {
-    public Post createPost(Post post, Integer userId);
-    public String updatePost(Post post);
-    public Post getPostById(Integer postId);
-    public List<Post> getPostByUser(Integer userId);
-    public String deletePost(Integer postId);
-    public List<Post> getAllPosts();
-
-    public List<Post> searchPosts(String keywords);
+    PostDto createPost(PostDto postDto, Integer userId);
+    public PostDto updatePost(PostDto postDto, Integer postId);
+    PostDto getPostById(Integer postId);
+    List<PostDto> getPostsByUser(Integer userId);
+    void deletePost(Integer postId);
+    List<PostDto> searchPosts(String keywords);
 }

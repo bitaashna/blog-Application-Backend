@@ -1,13 +1,15 @@
 package com.aashna.BlogApplication.services;
 
-import com.aashna.BlogApplication.model.User;
+import com.aashna.BlogApplication.payloads.UserDto;
+
 
 import java.util.List;
 
 public interface UserService {
-    public String createUser(User user);
-    public String updateUser(User user);
-    public User getUserById(Integer userId);
-    public String deleteUser(Integer userId);
-    public List<User> getAllUsers();
+    UserDto createUser(UserDto user);
+    UserDto updateUser(UserDto user, Integer userId);
+    UserDto getUserById(Integer userId);
+    void deleteUser(Integer userId);
+    List<UserDto> getAllUsers();
+
 }

@@ -1,7 +1,12 @@
 package com.aashna.BlogApplication.controllers;
 
 import com.aashna.BlogApplication.model.Post;
+import com.aashna.BlogApplication.payloads.ApiResponse;
+import com.aashna.BlogApplication.payloads.PostDto;
 import com.aashna.BlogApplication.services.PostService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,49 +15,47 @@ import java.util.List;
 @RequestMapping("/api")
 public class PostController {
 
-    PostService postService;
-    public PostController(PostService postService) {
-        this.postService = postService;
+    @Autowired
+    private PostService postService;
+
+    @PostMapping("/user/{userId}/posts")
+    public ResponseEntity<PostDto> createPost(
+            @RequestBody PostDto postDto,
+            @PathVariable Integer userId) {
+        PostDto createdPost = this.postService.createPost(postDto, userId);
+        return new ResponseEntity<PostDto>(createdPost, HttpStatus.CREATED);
     }
 
     @GetMapping("/posts/{postId}")
-    public Post getPost(@PathVariable("postId") Integer postId) {
-        return postService.getPostById(postId);
+    public ResponseEntity<PostDto> getPostById(@PathVariable Integer postId) {
+        PostDto postDto = this.postService.getPostById(postId);
+        return new ResponseEntity<PostDto>(postDto, HttpStatus.OK);
     }
 
     @GetMapping("/user/{userId}/posts")
-    public List<Post> getPostByUser(@PathVariable Integer userId) {
-        return postService.getPostByUser(userId);
-    }
-
-    @GetMapping("/posts")
-    public List<Post>getAllPosts(){
-        return postService.getAllPosts();
-    }
-
-    @PostMapping("/user/{userId}/posts")
-    public String createPost(@RequestBody Post post, @PathVariable Integer userId){
-        postService.createPost(post, userId);
-        return "Post created Successfully";
-    }
-
-    @PutMapping
-    public String updatePost(@RequestBody Post post){
-        postService.updatePost(post);
-        return "Post updated successfully";
+    public ResponseEntity<List<PostDto>> getPostsByUser(@PathVariable Integer userId) {
+        List<PostDto> posts = this.postService.getPostsByUser(userId);
+        return new ResponseEntity<List<PostDto>>(posts, HttpStatus.OK);
     }
 
     @DeleteMapping("/posts/{postId}")
-    public String deletePostDetails(@PathVariable("postId") Integer postId){
-        postService.deletePost(postId);
-        return "Post Deleted";
+    public ApiResponse deletePost(@PathVariable Integer postId) {
+        this.postService.deletePost(postId);
+        return new ApiResponse("Post is successfully deleted!!", true);
+    }
+
+    @PutMapping("/posts/{postId}")
+    public ResponseEntity<PostDto> updatePost(@RequestBody PostDto postDto, @PathVariable Integer postId) {
+        PostDto updatedPost = this.postService.updatePost(postDto, postId);
+        return new ResponseEntity<PostDto>(updatedPost, HttpStatus.OK);
     }
 
     @GetMapping("/posts/search/{keywords}")
-    public List<Post> searchPostByTitle(@PathVariable("keywords") String keywords) {
-        return postService.searchPosts(keywords);
+    public ResponseEntity<List<PostDto>> searchPostByTitle(
+            @PathVariable("keywords") String keywords) {
+        List<PostDto> result = this.postService.searchPosts(keywords);
+        return new ResponseEntity<List<PostDto>>(result, HttpStatus.OK);
     }
-
 
 }
 
