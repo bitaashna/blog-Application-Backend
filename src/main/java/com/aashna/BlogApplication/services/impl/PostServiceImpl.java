@@ -1,8 +1,10 @@
 package com.aashna.BlogApplication.services.impl;
 
+import com.aashna.BlogApplication.model.Category;
 import com.aashna.BlogApplication.model.Post;
 import com.aashna.BlogApplication.model.User;
 import com.aashna.BlogApplication.payloads.PostDto;
+import com.aashna.BlogApplication.repositories.CategoryRepo;
 import com.aashna.BlogApplication.repositories.PostRepo;
 import com.aashna.BlogApplication.repositories.UserRepo;
 import com.aashna.BlogApplication.services.PostService;
@@ -26,18 +28,24 @@ public class PostServiceImpl implements PostService {
     @Autowired
     private UserRepo userRepo;
 
+    @Autowired
+    private CategoryRepo categoryRepo;
+
+
     public PostServiceImpl(PostRepo postRepo) {
         this.postRepo = postRepo;
     }
 
     @Override
-    public PostDto createPost(PostDto postDto, Integer userId) {
+    public PostDto createPost(PostDto postDto, Integer userId, Integer categoryId) {
 
         User user = this.userRepo.findById(userId).get();
+        Category category = this.categoryRepo.findById(categoryId).get();
         Post post = this.modelMapper.map(postDto, Post.class);
 
         post.setAddedDate(new Date());
         post.setUser(user);
+        post.setCategory(category);
 
         Post newPost = this.postRepo.save(post);
 
@@ -88,6 +96,18 @@ public class PostServiceImpl implements PostService {
     public List<PostDto> searchPosts(String keywords) {
 
         List<Post> posts = this.postRepo.searchByTitle("%" + keywords + "%");
+
+        List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class))
+                .collect(Collectors.toList());
+
+        return postDtos;
+    }
+
+    @Override
+    public List<PostDto> getPostsByCategory(Integer categoryId) {
+
+        Category cat = this.categoryRepo.findById(categoryId).get();
+        List<Post> posts = this.postRepo.findByCategory(cat);
 
         List<PostDto> postDtos = posts.stream().map((post) -> this.modelMapper.map(post, PostDto.class))
                 .collect(Collectors.toList());
