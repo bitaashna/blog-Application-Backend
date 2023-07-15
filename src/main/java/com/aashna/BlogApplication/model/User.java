@@ -27,6 +27,7 @@ public class User {
 
     private String about;
 
+    // if fetch type not used then error "DROP DATABASE fails due to foreign key constraints"
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Post> posts = new ArrayList<>();
 
