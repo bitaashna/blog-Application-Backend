@@ -6,11 +6,13 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @NoArgsConstructor
 @Getter
 @Setter
-public class CategoryDto {
+public class CategoryDto implements Serializable {
+    private static final long serialVersionUID = 4439114469417994331L;
 
     private Integer categoryId;
 

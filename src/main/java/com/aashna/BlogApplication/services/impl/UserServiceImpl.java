@@ -7,6 +7,9 @@ import com.aashna.BlogApplication.repositories.UserRepo;
 import com.aashna.BlogApplication.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -31,6 +34,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CachePut(value="UserDto", key="#userId")
     public UserDto updateUser(UserDto userDto, Integer userId) {
 
         User user = this.userRepo.findById(userId)
@@ -48,6 +52,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(value="UserDto", key="#userId")
     public UserDto getUserById(Integer userId) {
 
         User user = this.userRepo.findById(userId)
@@ -57,6 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @CacheEvict(value="UserDto", key="#userId")
     public void deleteUser(Integer userId) {
 
         User user = this.userRepo.findById(userId)

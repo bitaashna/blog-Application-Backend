@@ -9,6 +9,8 @@ import com.aashna.BlogApplication.repositories.PostRepo;
 import com.aashna.BlogApplication.services.CommentService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -40,6 +42,7 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    @CacheEvict(value="CommentDto", key="#commentId")
     public void deleteComment(Integer commentId) {
         // TODO Auto-generated method stub
 

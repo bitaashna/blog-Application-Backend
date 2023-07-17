@@ -7,11 +7,13 @@ import lombok.Setter;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserDto {
+public class UserDto implements Serializable {
+    private static final long serialVersionUID = 4439114469417994311L;
 
     private int id;
 

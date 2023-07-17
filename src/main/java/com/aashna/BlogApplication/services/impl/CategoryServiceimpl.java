@@ -7,6 +7,9 @@ import com.aashna.BlogApplication.repositories.CategoryRepo;
 import com.aashna.BlogApplication.services.CategoryService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,6 +32,7 @@ public class CategoryServiceimpl implements CategoryService {
     }
 
     @Override
+    @CachePut(value="CategoryDto", key="#categoryId")
     public CategoryDto updateCategoryById(CategoryDto categoryDto, Integer categoryId) {
         Category cat = this.categoryRepo.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("category", "category Id", categoryId));
@@ -42,6 +46,7 @@ public class CategoryServiceimpl implements CategoryService {
     }
 
     @Override
+    @CacheEvict(value="CategoryDto", key="#categoryId")
     public void deleteCategoryById(Integer categoryId) {
 
         Category cat = this.categoryRepo.findById(categoryId)
@@ -51,6 +56,7 @@ public class CategoryServiceimpl implements CategoryService {
     }
 
     @Override
+    @Cacheable(value="CategoryDto", key="#categoryId")
     public CategoryDto getCategoryById(Integer categoryId) {
 
         Category cat = this.categoryRepo.findById(categoryId)
