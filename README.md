@@ -128,7 +128,7 @@ This is a RESTful web service for a blogging platform.The API is built using Jav
 `pageSize (optional):` The number of posts per page (default: 10).
 `Response:` Returns a PostResponse object containing paginated post results and HTTP status code 202 (Accepted).
 
-*`GET /posts/{keyword}:`
+* `GET /posts/{keyword}:`
 `Purpose:` Retrieves posts by searching for a keyword in the title.
 `Path Parameter: keyword -` The keyword to search
 
